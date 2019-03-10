@@ -1,0 +1,1363 @@
+<sdf version='1.6'>
+  <world name='default'>
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose frame=''>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <model name='ground_plane'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <contact>
+              <collide_bitmask>65535</collide_bitmask>
+              <ode/>
+            </contact>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics name='default_physics' default='0' type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <audio>
+      <device>default</device>
+    </audio>
+    <wind/>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <model name='Brick'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>0.189792 -0.14578 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_0'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.01341 -0.279844 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_1'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.146395 -0.506401 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_2'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.462144 -0.112524 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_3'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.384756 -0.362894 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_4'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.588168 -0.296407 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_5'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>0.183727 -0.595893 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_6'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.203587 -0.587221 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_7'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.233257 -0.512786 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_8'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.455641 -0.547291 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_9'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.106354 -0.667863 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_10'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>0.089392 -0.592358 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_11'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>0.05575 -0.586704 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_12'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.224833 -0.700192 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_13'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.452321 -0.56326 0 0 -0 0</pose>
+    </model>
+    <model name='Brick_14'>
+      <link name='Brick'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 -0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0017</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0017</iyy>
+            <iyz>0</iyz>
+            <izz>0.0017</izz>
+          </inertia>
+        </inertial>
+        <collision name='Brick_collision'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.192 0.062 0.086</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+                <fdir1>0 0 1</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <kd>10</kd>
+                <max_vel>2</max_vel>
+                <min_depth>0.0001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='Brick_visual'>
+          <pose frame=''>0 0 0 1.5708 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://Brick/meshes/Brick_1.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.698 0.25 0.25 1</ambient>
+            <diffuse>0.698 0.25 0.25 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>-0.41362 -0.693726 0 0 -0 0</pose>
+    </model>
+    <state world_name='default'>
+      <sim_time>72 208000000</sim_time>
+      <real_time>74 131334922</real_time>
+      <wall_time>1551361071 896480956</wall_time>
+      <iterations>72208</iterations>
+      <model name='Brick'>
+        <pose frame=''>0.34 -0.32 0.1 -3.14159 1.57059 1.571</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0.34 -0.32 0.1 -3.14159 1.57059 1.571</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>-0 -0 0 0 -0 0</acceleration>
+          <wrench>-0 -0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_0'>
+        <pose frame=''>0.17 -0.32 0.1 -3.14159 1.57059 1.571</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0.17 -0.32 0.1 -3.14159 1.57059 1.571</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_1'>
+        <pose frame=''>0 -0.32 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0 -0.32 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_10'>
+        <pose frame=''>0.17 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0.17 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_11'>
+        <pose frame=''>0 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_12'>
+        <pose frame=''>-0.17 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>-0.17 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_13'>
+        <pose frame=''>-0.34 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>-0.34 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_14'>
+        <pose frame=''>0 -0.59 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0 -0.59 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_2'>
+        <pose frame=''>-0.17 -0.32 0.1 3.14149 1.57059 -1.57069</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>-0.17 -0.32 0.1 3.14149 1.57059 -1.57069</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_3'>
+        <pose frame=''>-0.34 -0.32 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>-0.34 -0.32 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_4'>
+        <pose frame=''>0.34 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0.34 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_5'>
+        <pose frame=''>0.17 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0.17 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_6'>
+        <pose frame=''>0 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_7'>
+        <pose frame=''>-0.17 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>-0.17 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_8'>
+        <pose frame=''>-0.34 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>-0.34 -0.41 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Brick_9'>
+        <pose frame=''>0.34 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='Brick'>
+          <pose frame=''>0.34 -0.5 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ground_plane'>
+        <pose frame=''>-0.34 -0.32 0.1 3.14159 1.57059 -1.57059</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>-0.34 -0.32 0.1 3.14159 1.57059 -1.57059</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose frame=''>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>2.65226 -3.18966 3.36019 0 0.701797 2.26019</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+  </world>
+</sdf>
