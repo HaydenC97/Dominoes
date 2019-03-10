@@ -28,6 +28,6 @@
 
 	<node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub"/> 
 
-	<node pkg="franka_gazebo" type="teststart.py" name="teststart" output="screen"/>
+	<node pkg="franka_gazebo" type="directjointpublish.py" name="directjointpublish" output="screen"/>
 
 </launch>
