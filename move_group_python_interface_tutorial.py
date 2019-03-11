@@ -41,6 +41,10 @@
 ## and a `RobotCommander`_ class. More on these below. We also import `rospy`_ and some messages that we will use:
 ##
 
+
+## move_group.compute_cartesian_path(self, waypoints, eef_step, jump_threshold)
+
+
 import sys
 import copy
 import rospy
@@ -54,7 +58,7 @@ from moveit_commander.conversions import pose_to_list
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 ## END_SUB_TUTORIAL
 
-#text_file = open("output.txt", "w")
+#text_file = open("waypoint.txt", "w")
 
 low = 0.27
 high = 0.47
@@ -119,6 +123,8 @@ class MoveGroupPythonInteface(object):
     display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',
                                                    moveit_msgs.msg.DisplayTrajectory,
                                                    queue_size=20)
+
+
 
     ## END_SUB_TUTORIAL
 
@@ -217,7 +223,7 @@ class MoveGroupPythonInteface(object):
     global gripper_open
     move_group = self.move_group
     joint = move_group.get_current_joint_values()
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as f:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as f:
       #set_joints([0.06, 0.06],[j1-7])
       f.write("set_joints(")
       if gripper_open == True:
@@ -231,7 +237,32 @@ class MoveGroupPythonInteface(object):
           f.write(", ")
       f.write("])\n")
 
-  def plan_cartesian_path(self, scale=1):
+  def plan_cartesian_path2(self, scale=1):
+    # Copy class variables to local variables to make the web tutorials more clear.
+    # In practice, you should use the class variables directly unless you have a good
+    # reason not to.
+    move_group = self.move_group
+    waypoints = []
+
+    wpose = move_group.get_current_pose().pose
+    wpose.position.z += scale * 0.2  # First move up (z)
+    wpose.position.y += scale * 0.2  # and sideways (y)
+    waypoints.append(copy.deepcopy(wpose))
+
+    wpose.position.x += scale * 0.1  # Second move forward/backwards in (x)
+    waypoints.append(copy.deepcopy(wpose))
+
+    wpose.position.y -= scale * 0.1  # Third move sideways (y)
+    waypoints.append(copy.deepcopy(wpose))
+    (plan, fraction) = move_group.compute_cartesian_path(
+                                       waypoints,   # waypoints to follow
+                                       0.01,        # eef_step
+                                       0.0)         # jump_threshold
+
+    # Note: We are just planning, not asking move_group to actually move the robot yet:
+    return plan, fraction
+
+  def plan_cartesian_path(self, waypoints, scale=1):
     # Copy class variables to local variables to make the web tutorials more clear.
     # In practice, you should use the class variables directly unless you have a good
     # reason not to.
@@ -317,14 +348,15 @@ class MoveGroupPythonInteface(object):
     ang = 0
     xarr = np.linspace(xnow,x,num=sample)
     yarr = np.linspace(ynow,y,num=sample)
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("# open gripper\n")
       gripper_open = True
-    for i in range(sample):
-      self.go_to_pose_goal(xarr[i], yarr[i], clear)
+    '''for i in range(sample):
+      self.go_to_pose_goal(xarr[i], yarr[i], clear)'''
+    self.go_to_pose_goal(x,y,clear)
       # wpose = self.move_group.get_current_pose().pose
       # waypoints.append(copy.deepcopy(wpose))
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("# going down\n")
     znow = pose.position.z
     zarr = np.linspace(znow, low, num=sample)
@@ -333,14 +365,14 @@ class MoveGroupPythonInteface(object):
       # wpose = self.move_group.get_current_pose().pose
       # waypoints.append(copy.deepcopy(wpose))
 
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("# close gripper\n")
     self.go_to_pose_goal(x, y, low)
     # wpose = self.move_group.get_current_pose().pose
     # waypoints.append(copy.deepcopy(wpose))
     gripper_open = False
 
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("# going up\n\n")
     zarr = np.linspace(low, clear, num=sample)
     for i in range(sample):
@@ -360,12 +392,13 @@ class MoveGroupPythonInteface(object):
     ang = atan(y/x)-pi
     xarr = np.linspace(xnow,x,num=sample)
     yarr = np.linspace(ynow,y,num=sample)
-    for i in range(sample):
-      self.go_to_pose_goal(xarr[i], yarr[i], clear)
+    '''for i in range(sample):
+      self.go_to_pose_goal(xarr[i], yarr[i], clear)'''
+    self.go_to_pose_goal(x,y,clear)
       # wpose = self.move_group.get_current_pose().pose
       # waypoints.append(copy.deepcopy(wpose))
     self.go_to_pose_goal(x, y, clear, ang)
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("# going down\n")
     znow = pose.position.z
     zarr = np.linspace(znow, z, num=sample)
@@ -374,14 +407,14 @@ class MoveGroupPythonInteface(object):
       # wpose = self.move_group.get_current_pose().pose
       # waypoints.append(copy.deepcopy(wpose))
 
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("# open gripper\n")
     self.go_to_pose_goal(x, y, z, ang)
     # wpose = self.move_group.get_current_pose().pose
     # waypoints.append(copy.deepcopy(wpose))
     gripper_open = True
 
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("# going up\n\n")
     zarr = np.linspace(z, clear, num=sample)
     for i in range(sample):
@@ -401,7 +434,7 @@ def main():
   global gripper_open
   global waypoints
   gripper_open = True
-  open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'w')
+  open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'w')
   try:
     print ""
     print "----------------------------------------------------------"
@@ -413,94 +446,94 @@ def main():
     raw_input()
     tutorial = MoveGroupPythonInteface()
     print tutorial.move_group.get_current_pose()
-    #tutorial.text_file = open("Output.txt", "w")
+    #tutorial.text_file = open("waypoint.txt", "w")
     print "============ Press `Enter` to execute a movement using a joint state goal ..."
     tutorial.go_to_joint_state()
-    print "============ 1"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    '''print "============ 1"
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 1\n")
     tutorial.pick(0.34, -0.32)
     tutorial.place(-0.5, 0, 0.27)
     print "============ 2"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 2\n")
     tutorial.pick(0.17, -0.32)
-    tutorial.place(-0.5, 0, high)
+    tutorial.place(-0.5, 0, high)'''
     print "============ 3"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 3\n")
-    tutorial.pick(0, -0.32)
+    tutorial.pick(0, -0.32-0.01)
     tutorial.place(-0.469846, 0.17101, low)
     print "============ 4"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 4\n")
-    tutorial.pick(-0.17, -0.32)
+    tutorial.pick(-0.17, -0.32-0.01)
     tutorial.place(-0.469846, 0.17101, high)
     print "============ 5"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 5\n")
     tutorial.pick(-0.34, -0.32)
     tutorial.place(-0.383022, 0.321394, low)
     print "============ 6"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 6\n")
-    tutorial.pick(0.34, -0.41)
+    tutorial.pick(0.34, -0.41-0.01)
     tutorial.place(-0.383022, 0.321394, high)
     print "============ 7"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 7\n")
-    tutorial.pick(0.17, -0.41)
+    tutorial.pick(0.17, -0.41-0.01)
     tutorial.place(-0.25, 0.433013, low)
     print "============ 8"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 8\n")
-    tutorial.pick(0, -0.41)
+    tutorial.pick(0, -0.41-0.01)
     tutorial.place(-0.25, 0.433013, high)
     print "============ 9"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 9\n")
-    tutorial.pick(-0.17, -0.41)
+    tutorial.pick(-0.17, -0.41-0.01)
     tutorial.place(-0.086824, 0.492404, low)
-    print "============ 10"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    '''print "============ 10"
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 10\n")
     tutorial.pick(-0.34, -0.41)
-    tutorial.place(-0.086824, 0.492404, high)
+    tutorial.place(-0.086824, 0.492404, high)'''
     print "============ 11"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 11\n")
     tutorial.pick(0.34, -0.5)
     tutorial.place(0.086824, 0.492404, low)
     print "============ 12"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 12\n")
-    tutorial.pick(0.17, -0.5)
+    tutorial.pick(0.17, -0.5-0.01)
     tutorial.place(0.086824, 0.492404, high)
     print "============ 13"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 13\n")
-    tutorial.pick(0, -0.5)
+    tutorial.pick(0, -0.5-0.01)
     tutorial.place(0.25, 0.433013, low)
     print "============ 14"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 14\n")
-    tutorial.pick(-low, -0.5)
+    tutorial.pick(-low, -0.5-0.01)
     tutorial.place(0.25, 0.433013, high)
-    print "============ 15"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    '''print "============ 15"
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 15\n")
     tutorial.pick(-0.34, -0.5)
-    tutorial.place(0.383022, 0.321394, low)
-    print "============ 16"
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    tutorial.place(0.383022, 0.321394, low)'''
+    '''print "============ 16"
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Brick 16\n")
     tutorial.pick(0, -0.59)
-    tutorial.place(0.383022, 0.321394, high)
+    tutorial.place(0.383022, 0.321394, high)'''
 
 
     print "knock"
     tutorial.go_knock_pose()
-    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/output.txt", 'a+') as text_file:
+    with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Knocking \n")
 
     # (plan, fraction) = tutorial.move_group.compute_cartesian_path(
