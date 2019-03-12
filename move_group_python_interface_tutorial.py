@@ -1,49 +1,5 @@
 #!/usr/bin/env python
 
-# Software License Agreement (BSD License)
-#
-# Copyright (c) 2013, SRI International
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-#  * Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above
-#    copyright notice, this list of conditions and the following
-#    disclaimer in the documentation and/or other materials provided
-#    with the distribution.
-#  * Neither the name of SRI International nor the names of its
-#    contributors may be used to endorse or promote products derived
-#    from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
-#
-# Author: Acorn Pooley, Mike Lautman
-
-## BEGIN_SUB_TUTORIAL imports
-##
-## To use the Python MoveIt! interfaces, we will import the `moveit_commander`_ namespace.
-## This namespace provides us with a `MoveGroupCommander`_ class, a `PlanningSceneInterface`_ class,
-## and a `RobotCommander`_ class. More on these below. We also import `rospy`_ and some messages that we will use:
-##
-
-
-## move_group.compute_cartesian_path(self, waypoints, eef_step, jump_threshold)
-
 
 import sys
 import copy
@@ -62,7 +18,7 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
 low = 0.27
 high = 0.47
-clear = 0.75
+clear = 0.67
 gripper_open = False
 sample = 5
 waypoints = []
@@ -178,6 +134,7 @@ class MoveGroupPythonInteface(object):
 
 
   def go_to_pose_goal(self, x, y, z, orientation=0):
+    global waypoints
     move_group = self.move_group
     pose_goal = geometry_msgs.msg.Pose()
     quart = quaternion_from_euler(pi,0,pi/4+orientation)
@@ -196,6 +153,7 @@ class MoveGroupPythonInteface(object):
     move_group.stop()
     move_group.clear_pose_targets()
     current_pose = self.move_group.get_current_pose().pose
+    waypoints.append(copy.deepcopy(current_pose))
     return all_close(pose_goal, current_pose, 0.01)
 
   def go_knock_pose(self):
@@ -237,52 +195,13 @@ class MoveGroupPythonInteface(object):
           f.write(", ")
       f.write("])\n")
 
-  def plan_cartesian_path2(self, scale=1):
-    # Copy class variables to local variables to make the web tutorials more clear.
-    # In practice, you should use the class variables directly unless you have a good
-    # reason not to.
-    move_group = self.move_group
-    waypoints = []
+  def plan_cartesian_path(self, jump=0):
+    global waypoints
 
-    wpose = move_group.get_current_pose().pose
-    wpose.position.z += scale * 0.2  # First move up (z)
-    wpose.position.y += scale * 0.2  # and sideways (y)
-    waypoints.append(copy.deepcopy(wpose))
-
-    wpose.position.x += scale * 0.1  # Second move forward/backwards in (x)
-    waypoints.append(copy.deepcopy(wpose))
-
-    wpose.position.y -= scale * 0.1  # Third move sideways (y)
-    waypoints.append(copy.deepcopy(wpose))
     (plan, fraction) = move_group.compute_cartesian_path(
                                        waypoints,   # waypoints to follow
                                        0.01,        # eef_step
-                                       0.0)         # jump_threshold
-
-    # Note: We are just planning, not asking move_group to actually move the robot yet:
-    return plan, fraction
-
-  def plan_cartesian_path(self, waypoints, scale=1):
-    # Copy class variables to local variables to make the web tutorials more clear.
-    # In practice, you should use the class variables directly unless you have a good
-    # reason not to.
-    move_group = self.move_group
-    waypoints = []
-
-    wpose = move_group.get_current_pose().pose
-    wpose.position.z += scale * 0.2  # First move up (z)
-    wpose.position.y += scale * 0.2  # and sideways (y)
-    waypoints.append(copy.deepcopy(wpose))
-
-    wpose.position.x += scale * 0.1  # Second move forward/backwards in (x)
-    waypoints.append(copy.deepcopy(wpose))
-
-    wpose.position.y -= scale * 0.1  # Third move sideways (y)
-    waypoints.append(copy.deepcopy(wpose))
-    (plan, fraction) = move_group.compute_cartesian_path(
-                                       waypoints,   # waypoints to follow
-                                       0.01,        # eef_step
-                                       0.0)         # jump_threshold
+                                       jump)         # jump_threshold
 
     # Note: We are just planning, not asking move_group to actually move the robot yet:
     return plan, fraction
@@ -342,17 +261,9 @@ class MoveGroupPythonInteface(object):
     global gripper_open
     global sample
     global waypoints
-    pose = self.move_group.get_current_pose().pose
-    xnow = pose.position.x
-    ynow = pose.position.y
-    ang = 0
-    xarr = np.linspace(xnow,x,num=sample)
-    yarr = np.linspace(ynow,y,num=sample)
     with open("/home/user/catkin_ws/src/moveit_tutorials/doc/move_group_python_interface/scripts/waypoint.txt", 'a+') as text_file:
       text_file.write("# open gripper\n")
       gripper_open = True
-    '''for i in range(sample):
-      self.go_to_pose_goal(xarr[i], yarr[i], clear)'''
     self.go_to_pose_goal(x,y,clear)
       # wpose = self.move_group.get_current_pose().pose
       # waypoints.append(copy.deepcopy(wpose))
@@ -385,15 +296,7 @@ class MoveGroupPythonInteface(object):
     global gripper_open
     global sample
     global waypoints
-    pose = self.move_group.get_current_pose().pose
-    xnow = pose.position.x
-    ynow = pose.position.y
-    eulernow = euler_from_quaternion([pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w])
     ang = atan(y/x)-pi
-    xarr = np.linspace(xnow,x,num=sample)
-    yarr = np.linspace(ynow,y,num=sample)
-    '''for i in range(sample):
-      self.go_to_pose_goal(xarr[i], yarr[i], clear)'''
     self.go_to_pose_goal(x,y,clear)
       # wpose = self.move_group.get_current_pose().pose
       # waypoints.append(copy.deepcopy(wpose))
@@ -530,6 +433,8 @@ def main():
     tutorial.pick(0, -0.59)
     tutorial.place(0.383022, 0.321394, high)'''
 
+    (plan, fraction) = tutorial.plan_cartesian_path(0.5)
+    tutorial.execute_plan(plan)
 
     print "knock"
     tutorial.go_knock_pose()
@@ -552,6 +457,3 @@ def main():
 
 if __name__ == '__main__':
   main()
-
-
-
