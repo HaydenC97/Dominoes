@@ -6,7 +6,7 @@ import rospy
 import moveit_commander
 import moveit_msgs.msg
 import geometry_msgs.msg
-from math import pi, atan
+from math import pi, atan, floor
 import numpy as np
 from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
@@ -19,6 +19,25 @@ clear = 0.65 # the z coordinate the gripper will be moving in when transporting 
 gripper_open = False # global coordinate that indicates whether the gripper is opened
 sample = 5 # number of samples between two key waypoints
 waypoints = []
+
+## starting coordinates of bricks
+startx = [0.17, 0.34, 0.17, 0,\
+          -0.17, -0.34, 0.34, 0.17,\
+          0, -0.17, -0.34, 0.17,\
+          -0, 0.17]
+starty = [-0.23, -0.32, -0.32, -0.32,\
+          -0.32, -0.32, -0.41, -0.41,\
+          -0.41, -0.41, -0.41, -0.5,\
+          -0.5, -0.5]
+## ending coordinates of bricks
+endx = [-0.47, -0.383,\
+        -0.25, -0.087,\
+        0.087, 0.25,\
+        0.383]
+endy = [0.171, 0.321,\
+        0.433, 0.492,\
+        0.492, 0.433,\
+        0.321]
 
 def all_close(goal, actual, tolerance):
   """
@@ -49,7 +68,7 @@ class MoveGroupPythonInteface(object):
     # initialising the move_group node
     moveit_commander.roscpp_initialize(sys.argv)
     rospy.init_node('move_group_python_interface_tutorial', anonymous=True)
-    
+
     ## Instantiate a RobotCommander object
     robot = moveit_commander.RobotCommander()
 
@@ -95,7 +114,7 @@ class MoveGroupPythonInteface(object):
     self.planning_frame = planning_frame
     self.eef_link = eef_link
     self.group_names = group_names
-  
+
   def write_joint_angles(self):
     global gripper_open
     move_group = self.move_group
@@ -112,7 +131,7 @@ class MoveGroupPythonInteface(object):
         if i < 6:
           f.write(", ")
       f.write("])\n")
-  
+
   def go_to_joint_state(self):
     #initialise the robot to a state that is not in singularity
     move_group = self.move_group
@@ -190,10 +209,10 @@ class MoveGroupPythonInteface(object):
     with open("waypoint.txt", 'a+') as text_file:
       text_file.write("# open gripper\n")
       gripper_open = True
-    
+
     '''for i in range(sample):
       self.go_to_pose_goal(xarr[i], yarr[i], clear)'''
-    
+
     self.go_to_pose_goal(x,y,clear)
     with open("waypoint.txt", 'a+') as text_file:
       text_file.write("# going down\n")
@@ -225,10 +244,11 @@ class MoveGroupPythonInteface(object):
     ang = atan(y/x)-pi
     xarr = np.linspace(xnow,x,num=sample)
     yarr = np.linspace(ynow,y,num=sample)
-    
+
     '''for i in range(sample):
       self.go_to_pose_goal(xarr[i], yarr[i], clear)'''
-    
+
+
     self.go_to_pose_goal(x,y,clear)
     self.go_to_pose_goal(x, y, clear, ang)
     with open("waypoint.txt", 'a+') as text_file:
@@ -255,9 +275,10 @@ def main():
   global clear
   global gripper_open
   global waypoints
-  offset = -0.01
+  global startx, starty, endx, endy
   gripper_open = True
   open("waypoint.txt", 'w')
+  height = [low, high]
   try:
     print ""
     print "----------------------------------------------------------"
@@ -267,104 +288,22 @@ def main():
     print ""
     print "============ Press `Enter` to begin the tutorial by setting up the moveit_commander ..."
     raw_input()
-    tutorial = MoveGroupPythonInteface()
-    print tutorial.move_group.get_current_pose()
-    #tutorial.text_file = open("waypoint.txt", "w")
+    robot = MoveGroupPythonInteface()
+    print robot.move_group.get_current_pose()
     print "============ Press `Enter` to execute a movement using a joint state goal ..."
-    tutorial.go_to_joint_state()
-    print "============ 1"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 1\n")
-    tutorial.pick(0.17, -0.23+offset)
-    tutorial.place(-0.47, 0.171, low)
-    print "============ 2"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 2\n")
-    tutorial.pick(0, -0.23+offset)
-    tutorial.place(-0.47, 0.171, high)
-    print "============ 3"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 3\n")
-    tutorial.pick(-0.17, -0.23+offset)
-    tutorial.place(-0.383, 0.321, low)
-    print "============ 4"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 4\n")
-    tutorial.pick(0.34, -0.32+offset)
-    tutorial.place(-0.383, 0.321, high)
-    print "============ 5"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 5\n")
-    tutorial.pick(0.17, -0.32+offset)
-    tutorial.place(-0.25, 0.433, low)
-    print "============ 6"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 6\n")
-    tutorial.pick(0, -0.32+offset)
-    tutorial.place(-0.25, 0.433, high)
-    print "============ 7"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 7\n")
-    tutorial.pick(-0.17, -0.32+offset)
-    tutorial.place(-0.087, 0.492, low)
-    print "============ 8"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 8\n")
-    tutorial.pick(-0.34, -0.32+offset)
-    tutorial.place(-0.087, 0.492, high)
-    print "============ 9"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 9\n")
-    tutorial.pick(0.34, -0.41+offset)
-    tutorial.place(0.087, 0.492, low)
-    print "============ 10"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 10\n")
-    tutorial.pick(0.17, -0.41+offset)
-    tutorial.place(0.087, 0.492, high)
-    print "============ 11"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 11\n")
-    tutorial.pick(0, -0.41+offset)
-    tutorial.place(0.25, 0.433, low)
-    print "============ 12"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 12\n")
-    tutorial.pick(-0.17, -0.41+offset)
-    tutorial.place(0.25, 0.433, high)
-    print "============ 13"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 13\n")
-    tutorial.pick(-0.34, -0.41+offset)
-    tutorial.place(0.383, 0.321, low)
-    print "============ 14"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 14\n")
-    tutorial.pick(0.17, -0.5+offset)
-    tutorial.place(0.383, 0.321, high)
-    print "============ 15"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 15\n")
-    tutorial.pick(0, -0.5+offset)
-    tutorial.place(0.47, 0.171, low)
-    print "============ 16"
-    with open("waypoint.txt", 'a+') as text_file:
-      text_file.write("\n# Brick 16\n")
-    tutorial.pick(-0.17, -0.5+offset)
-    tutorial.place(0.47, 0.171, high)
+    robot.go_to_joint_state()
+    raw_input()
 
+    for i in range(0,len(startx)):
+      print "============ Brick {:d} ============".format(i+1)
+      with open("waypoint.txt", 'a+') as text_file:
+        text_file.write("\n# Brick {:d}\n".format(i+1))
+      robot.pick(startx[i], starty[i])
+      robot.place(endx[int(round(i/2))], endy[int(round(i/2))], height[int(i%2)])
 
-    print "knock"
-    tutorial.go_knock_pose()
     with open("waypoint.txt", 'a+') as text_file:
       text_file.write("\n# Knocking \n")
 
-    # (plan, fraction) = tutorial.move_group.compute_cartesian_path(
-    #                                    waypoints,   # waypoints to follow
-    #                                    0.01,        # eef_step
-    #                                    0.0)         # jump_threshold
-    #
-    # tutorial.execute_plan(plan)
 
     text_file.close()
     print "Finished"
