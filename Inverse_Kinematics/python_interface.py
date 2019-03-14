@@ -10,7 +10,7 @@ from math import pi, atan, floor
 import numpy as np
 from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
-from tf.transformations import euler_from_quaternion, quaternion_from_euler
+from tf.transformations import quaternion_from_euler, euler_from_quaternion
 
 ######## variables for the motion planning of the builing of dominoes ########
 file_path = "waypoints.txt"
@@ -18,28 +18,26 @@ file_path = "waypoints.txt"
 low = 0.28 # z coordinate of the lower level of bricks
 high = 0.48 # z coordinate of the upper level of bricks
 clear = 0.65 # the z coordinate the gripper will be moving in when transporting the brick
-gripper_open = False # global coordinate that indicates whether the gripper is opened
-sample = 3 # number of samples between two key waypoints
-waypoints = []
+sample = 7 # number of samples between two key waypoints
 
 ## starting coordinates of bricks
+# x coordinates of the starting positions
 startx = [0.17, 0.34, 0.17, 0,
-          -0.17, -0.34, 0.34, 0.17,
-          0, -0.17, -0.34, 0.17,
-          -0, 0.17]
-starty = [-0.23, -0.32, -0.32, -0.32,
-          -0.32, -0.32, -0.41, -0.41,
-          -0.41, -0.41, -0.41, -0.5,
-          -0.5, -0.5]
+          -0.17, 0.34, 0.17, 0,
+          -0.17, 0.17, 0, -0.17]
+# y coordinates of the starting positions
+starty = [-0.24, -0.33, -0.33, -0.33,
+          -0.33, -0.42, -0.42, -0.42,
+          -0.42, -0.51, -0.51, -0.51]
 ## ending coordinates of bricks
+# x coordinates of the ending positions
 endx = [-0.47, -0.383,
         -0.25, -0.087,
-        0.087, 0.25,
-        0.383]
+        0.087, 0.25]
+# y coordinates of the ending positions
 endy = [0.171, 0.321,
         0.433, 0.492,
-        0.492, 0.433,
-        0.321]
+        0.492, 0.433]
 
 
 ######## if the building structure is unchanged, there is no need to edit the following sections ########
@@ -106,15 +104,11 @@ class MoveGroupPythonInteface(object):
 		self.group_names = group_names
 
 	def write_joint_angles(self):
-		global gripper_open
 		move_group = self.move_group
-		joint = move_group.get_current_joint_values()
-		with open(file_path, 'a+') as f:
+		joint = move_group.get_current_joint_values() #get the current joint values of the robot
+		with open(file_path, 'a+') as f: #write to the target output data file
+			# the rest of the function just formats the output to make it copt&paste-ready
 			f.write("set_joints(")
-			# if gripper_open == True:
-			#   f.write("[0.06, 0.06], ")
-			# else:
-			#   f.write("[0, 0], ")
 			f.write("[")
 			for i in range(0,7):
 				f.write(str(joint[i]))
@@ -122,7 +116,7 @@ class MoveGroupPythonInteface(object):
 					f.write(", ")
 			f.write("])\n")
 
-	def go_to_joint_state(self):
+	def go_to_initial_state(self):
 		#initialise the robot to a state that is not in singularity
 		move_group = self.move_group
 		joint_goal = move_group.get_current_joint_values()
@@ -166,45 +160,50 @@ class MoveGroupPythonInteface(object):
 
 	def go_knock_pose(self):
 		move_group = self.move_group
-		pose_goal = geometry_msgs.msg.Pose()
-		quart = quaternion_from_euler(pi/2,0,pi/4)
-		pose_goal.orientation.x = quart[0]
-		pose_goal.orientation.y = quart[1]
-		pose_goal.orientation.z = quart[2]
-		pose_goal.orientation.w = quart[3]
-		pose_goal.position.x = -0.5
-		pose_goal.position.y = -0.3
-		pose_goal.position.z = 3.7
-		move_group.set_pose_target(pose_goal)
-		joint = move_group.get_current_joint_values()
+
+		# rotate it back to prepare for knocking
+		with open(file_path, 'a+') as text_file:
+			text_file.write("#rotate back\n")
+		joint_goal = move_group.get_current_joint_values()
+		joint_goal[0] = joint_goal[0] - 0.3
+		move_group.go(joint_goal, wait=True)
 		self.write_joint_angles()
-		plan = move_group.go(wait=True)
+
+		# moving down to prepare knocking
+		with open(file_path, 'a+') as text_file:
+			text_file.write("#moving down\n")
+		current_pose = self.move_group.get_current_pose().pose
+		self.go_to_pose_goal(current_pose.position.x, current_pose.position.y, 0.6)
+		current_pose.position.z = 0.6
+
+		# knocking
+		with open(file_path, 'a+') as text_file:
+			text_file.write("#knocking\n")
+		joint_goal = move_group.get_current_joint_values()
+		joint_goal[0] = joint_goal[0] + 0.3
+		move_group.go(joint_goal, wait=True)
+		self.write_joint_angles()
+
 		move_group.stop()
 		move_group.clear_pose_targets()
 		current_pose = self.move_group.get_current_pose().pose
-		return all_close(pose_goal, current_pose, 0.01)
+		return all_close(current_pose, current_pose, 0.01)
 
 	def pick(self, x, y):
 		global clear
 		global low
-		global gripper_open
 		global sample
-		global waypoints
 		pose = self.move_group.get_current_pose().pose
-		xnow = pose.position.x
-		ynow = pose.position.y
-		ang = 0
-		xarr = np.linspace(xnow,x,num=sample)
-		yarr = np.linspace(ynow,y,num=sample)
+
+		# starts the picking sequence and opens the gripper
 		with open(file_path, 'a+') as text_file:
 			text_file.write("#start picking\n")
 			text_file.write("gripper_open()\n")
-			gripper_open = True
 
-		'''for i in range(sample):
-		  self.go_to_pose_goal(xarr[i], yarr[i], clear)'''
-
+		# hover over the brick
 		self.go_to_pose_goal(x,y,clear)
+
+		# start the going down sequence with intermediate waypoints
 		with open(file_path, 'a+') as text_file:
 			text_file.write("# going down\n")
 		znow = pose.position.z
@@ -212,11 +211,12 @@ class MoveGroupPythonInteface(object):
 		for i in range(sample):
 			self.go_to_pose_goal(x, y, zarr[i])
 
-		gripper_open = False
+		# close the gripper
 		self.go_to_pose_goal(x, y, low)
 		with open(file_path, 'a+') as text_file:
 			text_file.write("gripper_close()\n")
 
+		# move the gripper back up
 		with open(file_path, 'a+') as text_file:
 			text_file.write("# going up\n")
 		zarr = np.linspace(low, clear, num=sample)
@@ -225,21 +225,20 @@ class MoveGroupPythonInteface(object):
 
 	def place(self, x, y, z):
 		global clear
-		global gripper_open
 		global sample
-		global waypoints
 		pose = self.move_group.get_current_pose().pose
-		xnow = pose.position.x
-		ynow = pose.position.y
-		eulernow = euler_from_quaternion([pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w])
+
+		# calculate the orientation needed for this brick placement, by default pointing towards the centre
 		ang = atan(y/x)-pi
-		xarr = np.linspace(xnow,x,num=sample)
-		yarr = np.linspace(ynow,y,num=sample)
+
+		# starts the placing sequence
 		with open(file_path, 'a+') as text_file:
 			text_file.write("#start placing\n")
-		'''for i in range(sample):
-		  self.go_to_pose_goal(xarr[i], yarr[i], clear)'''
+
+		# moving to the hovering position of the placing position
 		self.go_to_pose_goal(x,y,clear)
+
+		# moving down to the placing position with intermediate waypoints
 		self.go_to_pose_goal(x, y, clear, ang)
 		with open(file_path, 'a+') as text_file:
 			text_file.write("# going down\n")
@@ -248,11 +247,12 @@ class MoveGroupPythonInteface(object):
 		for i in range(sample):
 			self.go_to_pose_goal(x, y, zarr[i], ang)
 
-		gripper_open = True
+		# open the gripper
 		self.go_to_pose_goal(x, y, z, ang)
 		with open(file_path, 'a+') as text_file:
 			text_file.write("gripper_open()\n")
 
+		# move the gripper back up
 		with open(file_path, 'a+') as text_file:
 			text_file.write("# going up\n")
 		zarr = np.linspace(z, clear, num=sample)
@@ -265,42 +265,38 @@ def main():
 	global low
 	global high
 	global clear
-	global gripper_open
-	global waypoints
 	global startx, starty, endx, endy
-	gripper_open = True
 	open(file_path, 'w')
 	height = [low, high]
 	try:
 		print ""
-		print "----------------------------------------------------------"
-		print "Welcome to Dominoes building"
-		print "----------------------------------------------------------"
+		print "--------------------------------------------------------------"
+		print "Welcome to Dominoes building group's inverse kinematics solver"
+		print "you can see the visualisation in RViz"
+		print "--------------------------------------------------------------"
 		print ""
 
 		robot = MoveGroupPythonInteface()
 		print "============ Press `Enter` to go to an example configuration of the robot"
 		raw_input()
-		robot.go_to_joint_state()
+		robot.go_to_initial_state()
 		print "============ Press `Enter` to start the motion planning"
 		raw_input()
 
+		# start the for loop for placing all the bricks
 		for i in range(0,len(startx)):
 			print "============ Brick {:d} ============".format(i+1)
 			with open(file_path, 'a+') as text_file:
 				text_file.write("\n# Brick {:d}\n".format(i+1))
 				text_file.write("\nprint \"starting Brick {:d}\"\n".format(i+1))
+			# read data from the defined coordinates arrays
 			robot.pick(startx[i], starty[i])
 			robot.place(endx[int(round(i/2))], endy[int(round(i/2))], height[int(i%2)])
 
+		# start the knocking sequence
 		with open(file_path, 'a+') as text_file:
 			text_file.write("\n# Knocking \n")
-
-
-		'''
-		set_joints([0, 0], [0.687824464687-0.2, 0.0923673264243, 0.00973169834862, -2.39005233025, -0.00252137170812, 2.48287550304, 2.35763320903])
-		set_joints([0, 0], [0.687824464687+0.2, 0.0923673264243, 0.00973169834862, -2.39005233025, -0.00252137170812, 2.48287550304, 2.35763320903])
-		'''
+		robot.go_knock_pose()
 
 		text_file.close()
 		print "Finished"
