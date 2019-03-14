@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-A simple script that translates desired gripper width to command for
+A simple script that translates desired gripper width to command for 
 JointGroupPositionController.
 """
 import rospy
