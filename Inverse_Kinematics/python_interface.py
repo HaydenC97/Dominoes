@@ -13,12 +13,15 @@ from moveit_commander.conversions import pose_to_list
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 
 ######## variables for the motion planning of the builing of dominoes ########
+
+# path and name of the output data file
 file_path = "waypoints.txt"
+
 ## Parameters for brick placing
 low = 0.28 # z coordinate of the lower level of bricks
 high = 0.48 # z coordinate of the upper level of bricks
-clear = 0.65 # the z coordinate the gripper will be moving in when transporting the brick
-sample = 7 # number of samples between two key waypoints
+clear = 0.65 # the z coordinate the gripper will be moving in when transporting the brick, clear of colliding into any other bricks
+sample = 7 # number of samples between two key waypoints, higher the sample number, more likely it is going to follow the planned path, but takes more computational time
 
 ## starting coordinates of bricks
 # x coordinates of the starting positions
@@ -58,6 +61,7 @@ def all_close(goal, actual, tolerance):
 
 
 class MoveGroupPythonInteface(object):
+	# more information about the class can be found in the documentation
 	def __init__(self):
 		super(MoveGroupPythonInteface, self).__init__()
 		# initialising the move_group node
@@ -88,10 +92,6 @@ class MoveGroupPythonInteface(object):
 
 		# We can get a list of all the groups in the robot:
 		group_names = robot.get_group_names()
-
-		# Sometimes for debugging it is useful to print the entire state of the
-		# robot:
-		## END_SUB_TUTORIAL
 
 		# Misc variables
 		self.box_name = ''
@@ -131,33 +131,6 @@ class MoveGroupPythonInteface(object):
 		current_joints = move_group.get_current_joint_values()
 		return all_close(joint_goal, current_joints, 0.01)
 
-
-	def go_to_pose_goal(self, x, y, z, orientation=0):
-		# member function that tells the robot to move to a certain pose
-		# gripper is always pointing downwards, and rotating along the z axis
-		# orientation is the angle between the x and x' axis along z axis
-		# by default the orientation is the longest side parallel with the z axis, shortest side parallel with the y axis
-		move_group = self.move_group
-		pose_goal = geometry_msgs.msg.Pose()
-		# the pose is defined using quaternion, which is mathematically more elegant comparing with Euler angles
-		quart = quaternion_from_euler(pi,0,pi/4+orientation)
-		pose_goal.orientation.x = quart[0]
-		pose_goal.orientation.y = quart[1]
-		pose_goal.orientation.z = quart[2]
-		pose_goal.orientation.w = quart[3]
-		pose_goal.position.x = x
-		pose_goal.position.y = y
-		pose_goal.position.z = z
-
-		move_group.set_pose_target(pose_goal)
-		joint = move_group.get_current_joint_values()
-		self.write_joint_angles()
-		plan = move_group.go(wait=True)
-		move_group.stop()
-		move_group.clear_pose_targets()
-		current_pose = self.move_group.get_current_pose().pose
-		return all_close(pose_goal, current_pose, 0.01)
-
 	def go_knock_pose(self):
 		move_group = self.move_group
 
@@ -188,6 +161,36 @@ class MoveGroupPythonInteface(object):
 		move_group.clear_pose_targets()
 		current_pose = self.move_group.get_current_pose().pose
 		return all_close(current_pose, current_pose, 0.01)
+
+	def go_to_pose_goal(self, x, y, z, orientation=0):
+		# member function that tells the robot to move to a certain pose
+		# gripper is always pointing downwards, and rotating along the z axis
+		# orientation is the angle between the x and x' axis along z axis
+		# by default the orientation is the longest side parallel with the z axis, shortest side parallel with the y axis
+		move_group = self.move_group
+		pose_goal = geometry_msgs.msg.Pose()
+		# the pose is defined using quaternion, which is mathematically more elegant comparing with Euler angles
+		# the only changing orientation is about the z-axis
+		quart = quaternion_from_euler(pi,0,pi/4+orientation)
+		pose_goal.orientation.x = quart[0]
+		pose_goal.orientation.y = quart[1]
+		pose_goal.orientation.z = quart[2]
+		pose_goal.orientation.w = quart[3]
+		pose_goal.position.x = x
+		pose_goal.position.y = y
+		pose_goal.position.z = z
+
+		# move the robot to the pose
+		move_group.set_pose_target(pose_goal)
+		joint = move_group.get_current_joint_values()
+		self.write_joint_angles()
+		plan = move_group.go(wait=True)
+		move_group.stop()
+
+		# clear residual movements
+		move_group.clear_pose_targets()
+		current_pose = self.move_group.get_current_pose().pose
+		return all_close(pose_goal, current_pose, 0.01)
 
 	def pick(self, x, y):
 		global clear
@@ -271,8 +274,8 @@ def main():
 	try:
 		print ""
 		print "--------------------------------------------------------------"
-		print "Welcome to Dominoes building group's inverse kinematics solver"
-		print "you can see the visualisation in RViz"
+		print "Welcome to dominoes building group's inverse kinematics solver"
+		print "           you can see the visualisation in RViz"
 		print "--------------------------------------------------------------"
 		print ""
 
@@ -291,6 +294,7 @@ def main():
 				text_file.write("\nprint \"starting Brick {:d}\"\n".format(i+1))
 			# read data from the defined coordinates arrays
 			robot.pick(startx[i], starty[i])
+			# this sets each stack to have two bricks
 			robot.place(endx[int(round(i/2))], endy[int(round(i/2))], height[int(i%2)])
 
 		# start the knocking sequence
