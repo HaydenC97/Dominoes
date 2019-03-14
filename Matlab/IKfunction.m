@@ -7,7 +7,7 @@
 
 %IMPORTANT: to be able to call this MatLab function from Python (using the
 %mattest.py script) it is necessary to have this function open and to run 
-%'matlab.engine.shareEngine in the command window below.
+%matlab.engine.shareEngine in the command window below.
 
 
 %The function takes as input desired starting joint angles and a target
