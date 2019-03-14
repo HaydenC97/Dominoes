@@ -7,6 +7,11 @@ import rospy
 import actionlib
 from franka_gripper.msg import GraspAction, GraspGoal, MoveGoal, MoveAction
 
+def set_joints(joint_goal):
+	group.go(joint_goal, wait=True)
+	group.stop() # makes sure no residual movements left
+	return
+
 def gripper_open():
 	#rospy.init_node('Franka_gripper_move_action')
 	client = actionlib.SimpleActionClient('/franka_gripper/move', MoveAction)
@@ -28,10 +33,7 @@ def gripper_close():
 	rospy.loginfo("DONE")
 	return
 
-def set_joints(joint_goal):
-	group.go(joint_goal, wait=True)
-	group.stop() # makes sure no residual movements left
-	return
+
 
 
 if __name__ == '__main__':
