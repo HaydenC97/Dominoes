@@ -118,8 +118,8 @@ class MoveGroupPythonInteface(object):
 			f.write("[")
 			for i in range(0,7):
 				f.write(str(joint[i]))
-			if i < 6:
-				f.write(", ")
+				if i < 6:
+					f.write(", ")
 			f.write("])\n")
 
 	def go_to_joint_state(self):
