@@ -26,3 +26,12 @@ To use the scripts (they can be used in any catkin_ws as long as they are source
 More detailed instruction and script documentation can be found here: https://drive.google.com/file/d/1w-LwVvaylT83-L9LOh5srRP6lYMZMGxe/view?usp=sharing
 
 The full development process of this project can be found here: https://drive.google.com/file/d/1GVXhP2Zk7qUlBTXRKviGo2JeZ8iw8Dau/view?usp=sharing
+
+## Videos
+Project Video: https://drive.google.com/open?id=18m1x9itvJLywwTmwTABYQyOx2gd90aUO
+
+Demonstration of the simulation: https://drive.google.com/open?id=1-60kZslwG_zOyN45M6za9f0Tl_CqTSqr
+
+Demonstration of the motion planning: https://drive.google.com/file/d/1ttbty_gStDnlmdwJEHh0Vam823G1nj-2/view?usp=sharing
+
+Instruction video: https://drive.google.com/open?id=1yZ_LqwIS9vW6VtpfpRrbwmpkPJI9VLMG
